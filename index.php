@@ -3,7 +3,7 @@
  * Plugin Name: International Telephone Input With Flags And Dial Codes
  * Plugin URI: https://wordpress.org/plugins/international-telephone-input-with-flags-and-dial-codes/
  * Description: Plugin turns the standard telephone input into an International Telephone Input with a national flag drop down list & respective Country dial codes.
- * Version: 1.0.1
+ * Version: 1.0.5
  * Author: Sajjad Hossain Sagor
  * Author URI: https://sajjadhsagor.com/
  * Text Domain: international-telephone-input-with-flags-and-dial-codes
@@ -51,6 +51,10 @@ class WPITFDC_SETTINGS
         add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 
         add_action( 'wp_footer', array( $this, 'footer' ) );
+        
+        add_action( 'wp_ajax_wpitfdc_get_visitor_country', array( $this, 'get_visitor_country' ) );
+        
+        add_action( 'wp_ajax_nopriv_wpitfdc_get_visitor_country', array( $this, 'get_visitor_country' ) );
     }
 
     public function admin_init()
@@ -109,7 +113,7 @@ class WPITFDC_SETTINGS
 			
 			$onlyCountries = empty( $this->options['onlyCountries'] ) ? array() : $this->options['onlyCountries'];
 
-			if ( $this->options['enable_geoip_loopup'] == 'on' )
+			if ( isset( $this->options['enable_geoip_loopup'] ) && $this->options['enable_geoip_loopup'] == 'on' )
 			{
 				require_once WPITFDC_ROOT_DIR . '/includes/vendor/autoload.php';
 
@@ -132,19 +136,94 @@ class WPITFDC_SETTINGS
 				<script type="text/javascript">
 					jQuery( document ).ready( function( $ )
 					{
-						var intlTelInput = $( "input[type='tel']" ).intlTelInput(
+						let initialCountry = '<?= strtolower( $initialCountry ); ?>';
+						
+						<?php
+
+							if ( isset( $this->options['enable_geoip_loopup_ajax'] ) && $this->options['enable_geoip_loopup_ajax'] == 'on' )
+							{
+								?>
+									$.get( "<?= admin_url( 'admin-ajax.php' ); ?>", { action: 'wpitfdc_get_visitor_country' }, function( data )
+									{
+										initialCountry = data;
+
+										do_the_plugin_thing();
+									} );
+								<?php
+							}
+							else
+							{
+								?>
+									do_the_plugin_thing();
+								<?php
+							}
+						?>
+						
+						function do_the_plugin_thing()
 						{
-							autoHideDialCode: false,
-							excludeCountries: <?= json_encode( $excludeCountries ); ?>,
-							initialCountry: "<?= strtolower( $initialCountry ); ?>",
-							onlyCountries: <?= json_encode( $onlyCountries ); ?>,
-							preferredCountries: <?= json_encode( $preferredCountries ); ?>,
-							nationalMode: false,
-						});
-					});
+							$( "input[type='tel']" ).each( function( index, el )
+							{
+								var name = ( typeof $( el ).attr( 'name' ) != 'undefined' && $( el ).attr( 'name' ) != '' ) ? $( el ).attr( 'name' ) : 'phoneNumber';
+								
+								$( el ).removeAttr( 'name' );
+
+								var id = Date.now();
+								
+								$( el ).after( '<input type="hidden" id="countryCode'+ id +'" name="'+ name +'" />' );
+								
+								$( el ).intlTelInput(
+								{
+									excludeCountries: <?= json_encode( $excludeCountries ); ?>,
+									initialCountry: initialCountry,
+									onlyCountries: <?= json_encode( $onlyCountries ); ?>,
+									preferredCountries: <?= json_encode( $preferredCountries ); ?>,
+									separateDialCode: true,
+								} );
+
+								setInterval( function()
+								{
+									var newVal = $( "input#countryCode" + id ).prev( '.iti' ).find( '.iti__selected-dial-code' ).text() + $( el ).val();
+									
+									if ( newVal == $( "input#countryCode" + id ).val() )
+									{
+										return;
+									}
+
+									if ( $( el ).val() == '' )
+									{
+										newVal = '';
+									}
+
+									$( "input#countryCode" + id ).val( newVal );
+								
+								}, 1000 );
+							} );
+						}
+					} );
 				</script>
 			<?php
 		}
+	}
+
+	public function get_visitor_country()
+	{
+		require_once WPITFDC_ROOT_DIR . '/includes/vendor/autoload.php';
+
+		// This creates the Reader object, 
+		$reader = new Reader( WPITFDC_ROOT_DIR . '/assets/vendor/GeoLite2-Country/GeoLite2-Country.mmdb' );
+
+		try
+		{	
+			$VisitorGeo = $reader->country( $this->get_visitor_ip() );
+
+			$initialCountry = $VisitorGeo->country->isoCode;
+		}
+		catch ( Exception $e )
+		{
+			$initialCountry = '';
+		}
+
+		echo strtolower( $initialCountry ); die();
 	}
 
     public function get_settings_sections()
@@ -205,6 +284,12 @@ class WPITFDC_SETTINGS
                     'name'    => 'enable_geoip_loopup',
                     'label'   => __( 'Enable GeoIP Lookup', 'international-telephone-input-with-flags-and-dial-codes' ),
                     'desc'	  => __( ' Enable Detecting User Country Based On IP Address & Set it Default Automatically', 'international-telephone-input-with-flags-and-dial-codes' ),
+                    'type'    => 'checkbox'
+                ),
+                array(
+                    'name'    => 'enable_geoip_loopup_ajax',
+                    'label'   => __( 'Compatibility With Cache Plugins', 'international-telephone-input-with-flags-and-dial-codes' ),
+                    'desc'	  => __( ' Enable Detecting User Country Based On IP Address Via Ajax To Support Cache Plugins. Only check this if you are using a cache plugin.', 'international-telephone-input-with-flags-and-dial-codes' ),
                     'type'    => 'checkbox'
                 ),
             )

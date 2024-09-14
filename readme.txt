@@ -2,10 +2,9 @@
 Tags: input,form,form-input,country-flag,dial-codes
 Contributors: sajjad67
 Author: Sajjad Hossain Sagor
-Tested up to: 6.0
+Tested up to: 6.6
 License: GPLv2
 Requires at least: 5.6
-Stable tag: trunk
 
 Turn Your Simple Telephone Input Into International Dial Codes Input
 
@@ -38,6 +37,14 @@ If successful, click Activate Plugin to activate it, or Return to Plugin Install
 3. Go to your Dashboard ->Settings -> Intl Telephone Input & Adjust Your Settings Accordingly.
 
 == Changelog ==
+= 1.0.5 =
+* Minor Update.. tested for latest wp compatibility. Updated MaxMind Geo DB To Latest Version.
+= 1.0.4 =
+* Added compatibility support to cache plugins. Updated MaxMind Geo DB To Latest Version.
+= 1.0.3 =
+* Separated country code from input field and appended the country code to the final value of the input when submit.
+= 1.0.2 =
+* Compatibility check for wp 6.3.
 = 1.0.1 =
 * Compatibility check for wp 6.0.
 = 1.0.0 =

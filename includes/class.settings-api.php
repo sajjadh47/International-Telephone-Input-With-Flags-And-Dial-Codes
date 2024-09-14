@@ -717,8 +717,8 @@ class WP_NinjaCoder_Settings_API
                         }
                         
                         $( this ).filter( '.hidden' ).removeClass( 'hidden' );
-                    });
-                });
+                    } );
+                } );
 
                 if ( activetab != '' && $( activetab + '-tab' ).length )
                 {
@@ -747,8 +747,8 @@ class WP_NinjaCoder_Settings_API
                     $( clicked_group ).fadeIn();
                     
                     evt.preventDefault();
-                });
-            });
+                } );
+            } );
         </script>
         <?php
         $this->_style_fix();
