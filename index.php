@@ -3,7 +3,7 @@
  * Plugin Name: International Telephone Input With Flags And Dial Codes
  * Plugin URI: https://wordpress.org/plugins/international-telephone-input-with-flags-and-dial-codes/
  * Description: Plugin turns the standard telephone input into an International Telephone Input with a national flag drop down list & respective Country dial codes.
- * Version: 1.0.5
+ * Version: 1.0.6
  * Author: Sajjad Hossain Sagor
  * Author URI: https://sajjadhsagor.com/
  * Text Domain: international-telephone-input-with-flags-and-dial-codes

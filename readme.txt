@@ -37,6 +37,8 @@ If successful, click Activate Plugin to activate it, or Return to Plugin Install
 3. Go to your Dashboard ->Settings -> Intl Telephone Input & Adjust Your Settings Accordingly.
 
 == Changelog ==
+= 1.0.6 =
+- Plugin crash fix for old PHP version. It will work now for php starting 7.2
 = 1.0.5 =
 * Minor Update.. tested for latest wp compatibility. Updated MaxMind Geo DB To Latest Version.
 = 1.0.4 =
