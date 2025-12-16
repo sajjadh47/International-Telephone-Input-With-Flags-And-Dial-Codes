@@ -3,7 +3,7 @@
 [![Plugin Banner](https://ps.w.org/international-telephone-input-with-flags-and-dial-codes/assets/banner-1544x500.png)](https://wordpress.org/plugins/international-telephone-input-with-flags-and-dial-codes/)
 
 **Tags:** input, form, form-input, country-flag, dial-codes \
-**Tested up to:** 6.8 \
+**Tested up to:** 6.9 \
 **Requires PHP:** 8.1
 
 Turn Your Simple Telephone Input Into International Dial Codes Input
@@ -48,6 +48,9 @@ If successful, click Activate Plugin to activate it, or Return to Plugin Install
 3. Go to your Dashboard ->Settings -> Intl Telephone Input & Adjust Your Settings Accordingly.
 
 ## Changelog
+
+### 2.0.6
+- Checked for latest wp version 6.9
 
 ### 2.0.5
 - Geo Location Db updated to the last version.

@@ -134,6 +134,14 @@ class International_Telephone_Input_With_Flags_And_Dial_Codes_Public {
 			return $ipaddress;
 		}
 
+		if ( ! empty( $ipaddress ) ) {
+			$ipaddresses = explode( ',', $ipaddress );
+
+			if ( ! empty( $ipaddresses ) ) {
+				$ipaddress = trim( $ipaddresses[0] );
+			}
+		}
+
 		return $ipaddress;
 	}
 
